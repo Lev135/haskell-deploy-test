@@ -1,0 +1,80 @@
+# This is a workflow for automatic deployment of Haskell application
+
+name: git-deploy
+
+
+#
+env:
+  proj-name:            deploy-test
+  bot-git-name:         release-bot
+  main-branch-name:     master
+  release-branch-name:  release
+  bin-dir:              ./bin
+
+
+on:
+  push:
+    branches: ${{ env.main-branch-name }}
+
+jobs:
+  merging-updates:
+    runs-on: ubuntu-latest
+      - uses: actions/checkout@v3
+      - name: Merging updates
+        run: |
+          git config --global user.name ${{ env.bot-git-name }}
+          git fetch
+          git checkout ${{ env.release-branch-name }}
+          git merge ${{ env.main-branch-name }}
+      
+  # On ubuntu
+  ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+      - needs: [ merging-updates ]
+      - uses: actions/checkout@v3
+      - name: Setting up git
+        run: |
+          git config --global user.name ${{ env.bot-git-name }}
+          git fetch
+          git checkout ${{ env.release-branch-name }}
+          
+      - uses: actions/setup-haskell@v1
+        with:
+          ghc-version: '8.10.3'
+          cabal-version: '3.2'
+      - name: Cache
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-cabal
+        with:
+          path: ~/.cabal
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Install dependencies
+        run: |
+          cabal update
+          cabal build --only-dependencies
+      - name: Build
+        run: |
+          cabal build ${{ env.proj-name }} # the next command doesn't work with -O2 unfortunately
+          echo "path=$(cabal list-bin ${{ env.proj-name }})" >> $GITHUB_ENV
+
+      - name: Move binary
+        run: |
+          # Use git only for cross-platform
+          git add -A
+          git mv -f ${{ env.path }} ${{ env.bin-dir }}/${{ runner.os }}/
+    
+      - name: Make release note
+        run: |
+          echo "$(date +"%Y-%m-%d %T"): release on ${{ runner.os }}" >> ${ env.bin-dir }/release-notes.txt
+      - name: Commiting changes
+        run: |
+          git add -A
+          git commit -m "Release for ${{ runner.os }} generated"
+          git push
