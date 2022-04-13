@@ -22,16 +22,24 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-      - name: Build
+      - name: Set the value
+        id: step_one
         run: |
-          echo "path=app" >> $GITHUB_ENV
-          ls "${{ env.path }}"
-      - name: Deploy
-        uses: adityak74/google-drive-upload-git-action@main
-        with:
-          credentials: AIzaSyAaxeVSEI43XMqGvyonevZhX_Bz6qX2bls # ${{ secrets.credentials }}
-          filename: "{{ env.path }}/Main.hs"
-          name: "Test on ${{ runner.os }}" 
-          overwrite: "true"
+          echo "action_state=yellow" >> $GITHUB_ENV
+      - name: Use the value
+        id: step_two
+        run: |
+          echo "${{ env.action_state }}" # This will output 'yellow'
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+#       - uses: actions/checkout@v3
+#       - name: Build
+#         run: |
+#           echo "path=app" >> $GITHUB_ENV
+#           ls "${{ env.path }}"
+#       - name: Deploy
+#         uses: adityak74/google-drive-upload-git-action@main
+#         with:
+#           credentials: AIzaSyAaxeVSEI43XMqGvyonevZhX_Bz6qX2bls # ${{ secrets.credentials }}
+#           filename: "{{ env.path }}/Main.hs"
+#           name: "Test on ${{ runner.os }}" 
+#           overwrite: "true"
