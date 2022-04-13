@@ -25,7 +25,10 @@ jobs:
         run: |
           git config --global user.name ${{ env.bot-git-name }}
           git fetch
+          git checkout master
+          git pull
           git checkout ${{ env.release-branch-name }}
+          git pull
           git merge master
           git push
       
