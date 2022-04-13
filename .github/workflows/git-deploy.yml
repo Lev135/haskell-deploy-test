@@ -63,7 +63,7 @@ jobs:
     
       - name: Make release note
         run: |
-          echo "$(date +"%Y-%m-%d %T"): release on ${{ runner.os }}" >> ${ env.bin-dir }/release-notes.txt
+          echo "$(date +"%Y-%m-%d %T"): release on ${{ runner.os }}" >> "${{ env.bin-dir }}/release-notes.txt"
       - name: Commiting changes
         run: |
           git add -A
