@@ -30,12 +30,12 @@ jobs:
       
   # On ubuntu
   ubuntu:
+    needs: [ merging-updates ]
     runs-on: ubuntu-latest
     #
     env:
       os-dir-name: ${{ github.job }}
     steps:
-      - needs: [ merging-updates ]
       - uses: actions/checkout@v3
       - name: Setting up git
         run: |
