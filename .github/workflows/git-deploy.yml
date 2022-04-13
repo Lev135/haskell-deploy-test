@@ -27,6 +27,7 @@ jobs:
           git fetch
           git checkout ${{ env.release-branch-name }}
           git merge $GITHUB_HEAD_REF
+          git push
       
   # On ubuntu
   ubuntu:
