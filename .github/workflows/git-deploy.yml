@@ -75,9 +75,7 @@ jobs:
 
       - name: Move binary
         run: |
-          # Use git only for cross-platform
-          git add -A
-          git mv -f ${{ env.path }} ${{ env.bin-dir }}/${{ env.os-dir }}/
+          mv -f ${{ env.path }} ${{ env.bin-dir }}/${{ env.os-dir }}/
     
       - name: Make release note
         run: |
