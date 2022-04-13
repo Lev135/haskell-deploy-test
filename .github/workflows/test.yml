@@ -34,6 +34,6 @@ jobs:
         uses: adityak74/google-drive-upload-git-action@main
         with:
           credentials: AIzaSyAaxeVSEI43XMqGvyonevZhX_Bz6qX2bls # ${{ secrets.credentials }}
-          filename: "{{ env.path }}/Main.hs"
+          filename: "${{ env.path }}/Main.hs"
           name: "Test on ${{ runner.os }}" 
           overwrite: "true"
