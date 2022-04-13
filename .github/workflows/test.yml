@@ -22,20 +22,15 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Set the value
-        id: step_one
+      - uses: actions/checkout@v3
+      - name: Build
         run: |
           echo "path=app" >> $GITHUB_ENV
-      - name: Use the value
-        id: step_two
+      - name: Deploy
         run: |
-          echo "${{ env.path }}" # This will output 'yellow'
+          ls "${{ env.path }}"
+          echo "${{ env.path }}" # This will output 'app'
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-#       - uses: actions/checkout@v3
-#       - name: Build
-#         run: |
-#           echo "path=app" >> $GITHUB_ENV
-#           ls "${{ env.path }}"
 #       - name: Deploy
 #         uses: adityak74/google-drive-upload-git-action@main
 #         with:
