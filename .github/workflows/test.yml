@@ -33,7 +33,7 @@ jobs:
       - name: Deploy
         uses: adityak74/google-drive-upload-git-action@main
         with:
-          credentials: "eyJ3ZWIiOnsiY2xpZW50X2lkIjoiMzM2OTM1MDM4ODgyLTdrMTYzaTdqMGJhMGd0azN2MzVnajhnNzZiNnZ2YzNlLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwicHJvamVjdF9pZCI6Imhhc2tlbGwtZGVwbG95LXRlc3QiLCJhdXRoX3VyaSI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbS9vL29hdXRoMi9hdXRoIiwidG9rZW5fdXJpIjoiaHR0cHM6Ly9vYXV0aDIuZ29vZ2xlYXBpcy5jb20vdG9rZW4iLCJhdXRoX3Byb3ZpZGVyX3g1MDlfY2VydF91cmwiOiJodHRwczovL3d3dy5nb29nbGVhcGlzLmNvbS9vYXV0aDIvdjEvY2VydHMiLCJjbGllbnRfc2VjcmV0IjoiR09DU1BYLWt6YlcyemNHdVVCZWhla0RLVk9hb0xBM3QwYjIifX0=" # ${{ secrets.credentials }}
+          credentials: ${{ secrets.credentials }}
           filename: "${{ env.path }}/Main.hs"
           name: "Test on ${{ runner.os }}" 
           folderId: "1Jre6LFYs8h3-H3Suc64GkFbFlF-7NMGa"
