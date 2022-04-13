@@ -9,6 +9,10 @@ on:
   pull_request:
     branches: [ master ]
 
+#
+env:
+  proj-name: deploy-test
+
 jobs:
   # On ubuntu
   ubuntu:
@@ -37,8 +41,8 @@ jobs:
           cabal build --only-dependencies
       - name: Build
         run: |
-          cabal build deploy-test -O2
-          echo "path=$(cabal list-bin deploy-test)" >> $GITHUB_ENV
+          cabal build ${{ env.proj-name }} # the next command doesn't work with -O2 unfortunately
+          echo "path=$(cabal list-bin ${{ env.proj-name }})" >> $GITHUB_ENV
         
       - name: Deploy
         uses: adityak74/google-drive-upload-git-action@main
