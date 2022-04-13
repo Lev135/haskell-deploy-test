@@ -44,8 +44,14 @@ jobs:
           cabal update
           cabal build --only-dependencies
       - name: Build
-        run: cabal build deploy-test -O2
-      - name: Deploy
         run: |
-          path=$(cabal list-bin deploy-test)
-          echo $path
+          cabal build deploy-test -O2
+          echo "path=$(cabal list-bin deploy-test)" >> $GITHUB_ENV
+          echo "${{ env.path }}"
+      - name: Deploy
+        uses: adityak74/google-drive-upload-git-action@main
+        with:
+          credentials: AIzaSyAaxeVSEI43XMqGvyonevZhX_Bz6qX2bls # ${{ secrets.credentials }}
+          filename: "{{ env.path }}"
+          name: "Release on ${{ runner.os }}" 
+          overwrite: "true"
