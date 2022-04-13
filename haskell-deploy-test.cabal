@@ -21,7 +21,7 @@ maintainer:         lev_135@mail.ru
 -- category:
 extra-source-files: CHANGELOG.md
 
-executable haskell-deploy-test
+executable deploy-test
     main-is:          Main.hs
 
     -- Modules included in this executable, other than Main.
