@@ -59,7 +59,7 @@ jobs:
       - name: Move binary
         run: |
           git checkout ${{ env.release-branch-name }}
-          mv -f ${{ env.path }} ${{ env.bin-dir }}/${{ env.os-dir }}/
+          mv -f ${{ env.path }} "${{ env.bin-dir }}/${{ env.os-dir-name }}/"
     
       - name: Make release note
         run: |
