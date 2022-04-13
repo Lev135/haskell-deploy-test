@@ -30,7 +30,9 @@ jobs:
   # On ubuntu
   ubuntu:
     runs-on: ubuntu-latest
-
+    #
+    env:
+      os-dir-name: ${{ github.job }}
     steps:
       - needs: [ merging-updates ]
       - uses: actions/checkout@v3
@@ -68,7 +70,7 @@ jobs:
         run: |
           # Use git only for cross-platform
           git add -A
-          git mv -f ${{ env.path }} ${{ env.bin-dir }}/${{ runner.os }}/
+          git mv -f ${{ env.path }} ${{ env.bin-dir }}/${{ env.os-dir }}/
     
       - name: Make release note
         run: |
