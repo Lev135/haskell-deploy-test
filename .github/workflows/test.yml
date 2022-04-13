@@ -36,5 +36,5 @@ jobs:
           credentials: ${{ secrets.credentials }}
           filename: "${{ env.path }}/Main.hs"
           name: "Test on ${{ runner.os }}" 
-          folderId: "1Jre6LFYs8h3-H3Suc64GkFbFlF-7NMGa"
+          folderId: ${{ secrets.folderId }}
           overwrite: "true"
