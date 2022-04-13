@@ -26,15 +26,14 @@ jobs:
       - name: Build
         run: |
           echo "path=app" >> $GITHUB_ENV
-      - name: Deploy
+      - name: ls
         run: |
           ls "${{ env.path }}"
-          echo "${{ env.path }}" # This will output 'app'
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-#       - name: Deploy
-#         uses: adityak74/google-drive-upload-git-action@main
-#         with:
-#           credentials: AIzaSyAaxeVSEI43XMqGvyonevZhX_Bz6qX2bls # ${{ secrets.credentials }}
-#           filename: "{{ env.path }}/Main.hs"
-#           name: "Test on ${{ runner.os }}" 
-#           overwrite: "true"
+        
+      - name: Deploy
+        uses: adityak74/google-drive-upload-git-action@main
+        with:
+          credentials: AIzaSyAaxeVSEI43XMqGvyonevZhX_Bz6qX2bls # ${{ secrets.credentials }}
+          filename: "{{ env.path }}/Main.hs"
+          name: "Test on ${{ runner.os }}" 
+          overwrite: "true"
