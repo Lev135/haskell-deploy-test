@@ -37,4 +37,3 @@ jobs:
           filename: "${{ env.path }}/Main.hs"
           name: "Test on ${{ runner.os }}" 
           folderId: ${{ secrets.folderId }}
-          overwrite: "true"
