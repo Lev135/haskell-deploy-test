@@ -26,6 +26,7 @@ jobs:
           git config --global user.name ${{ env.bot-git-name }}
           git fetch
           git checkout ${{ env.release-branch-name }}
+          echo "Merging branch $GIHUB_HEAD_REF"
           git merge $GITHUB_HEAD_REF
           git push
       
