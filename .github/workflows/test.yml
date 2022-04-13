@@ -35,5 +35,5 @@ jobs:
         with:
           credentials: ${{ secrets.credentials }}
           filename: "${{ env.path }}/Main.hs"
-          name: "Test on ${{ runner.os }}" 
+          name: "Test-on-${{ runner.os }}" 
           folderId: ${{ secrets.folderId }}
