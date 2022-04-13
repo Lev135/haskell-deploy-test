@@ -46,12 +46,12 @@ jobs:
       - name: Build
         run: |
           cabal build deploy-test -O2
-          echo "path=$(cabal list-bin deploy-test)" >> $GITHUB_ENV
-          echo "${{ env.path }}"
+          echo "path={cabal list-bin deploy-test}" >> $GITHUB_ENV
+          ls "${{ env.path }}"
       - name: Deploy
         uses: adityak74/google-drive-upload-git-action@main
         with:
           credentials: AIzaSyAaxeVSEI43XMqGvyonevZhX_Bz6qX2bls # ${{ secrets.credentials }}
-          filename: "{{ env.path }}"
+          filename: "{{ env.path }}/deploy-test"
           name: "Release on ${{ runner.os }}" 
           overwrite: "true"
