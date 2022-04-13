@@ -29,8 +29,10 @@ jobs:
           git pull
           git checkout ${{ env.release-branch-name }}
           git pull
+          git log --graph --pretty=oneline --abbrev-commit --all --decorate
           git merge master
           git push
+          
       
   # On ubuntu
   ubuntu:
