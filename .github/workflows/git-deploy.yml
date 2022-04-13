@@ -7,34 +7,41 @@ name: git-deploy
 env:
   proj-name:            deploy-test
   bot-git-name:         release-bot
-  main-branch-name:     master
   release-branch-name:  release
   bin-dir:              ./bin
 
 
 on:
   push:
-    branches: ${{ env.main-branch-name }}
+    # There should be only one branch here to work properly
+    branches: master
 
 jobs:
   merging-updates:
     runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v3
       - name: Merging updates
         run: |
           git config --global user.name ${{ env.bot-git-name }}
           git fetch
+          git checkout master
+          git pull
           git checkout ${{ env.release-branch-name }}
-          git merge ${{ env.main-branch-name }}
+          git pull
+          git log --graph --pretty=oneline --abbrev-commit --all --decorate
+          git merge master
+          git push
+          
       
   # On ubuntu
   ubuntu:
+    needs: [ merging-updates ]
     runs-on: ubuntu-latest
     #
     env:
       os-dir-name: ${{ github.job }}
     steps:
-      - needs: [ merging-updates ]
       - uses: actions/checkout@v3
       - name: Setting up git
         run: |
