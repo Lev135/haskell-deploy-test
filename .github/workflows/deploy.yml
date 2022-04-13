@@ -61,7 +61,9 @@ jobs:
       - uses: actions/setup-haskell@v1
         with:
           ghc-version: '8.10.3'
-          cabal-version: '3.2'
+          cabal-version: '3.6'
+      - name: Cabal version
+        run: cabal --version
       - name: Cache
         uses: actions/cache@v3
         env:
