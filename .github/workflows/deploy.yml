@@ -75,6 +75,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: "${{ env.path }}" 
+          key: "${{ github.sha }}/${{ env.job-name}}"
       - name: Deploy
         uses: adityak74/google-drive-upload-git-action@main
         with:
