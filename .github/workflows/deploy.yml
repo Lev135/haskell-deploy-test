@@ -44,10 +44,13 @@ jobs:
         run: |
           cabal build ${{ env.proj-name }} # the next command doesn't work with -O2 unfortunately
 
+      - name: Moving binary
+        run: mv "$(cabal list-bin ${{ env.proj-name }})" "./${{ github.job }}-build"
+      
       - name: Artifact binary
         uses: actions/upload-artifact@v2
         with:
-          path: "$(cabal list-bin ${{ env.proj-name }})/*"
+          path: "./${{ github.job }}-build"
           name: "${{ github.job }}-build"
   
   # On windows
@@ -79,10 +82,13 @@ jobs:
         run: |
           cabal build ${{ env.proj-name }} # the next command doesn't work with -O2 unfortunately
 
+      - name: Moving binary
+        run: mv "$(cabal list-bin ${{ env.proj-name }})" "./${{ github.job }}-build"
+      
       - name: Artifact binary
         uses: actions/upload-artifact@v2
         with:
-          path: "$(cabal list-bin ${{ env.proj-name }})/*"
+          path: "./${{ github.job }}-build"
           name: "${{ github.job }}-build"
   
   # Deploy cached binaries
@@ -97,9 +103,7 @@ jobs:
       - name: Start deploy ${{ env.job-name }}
         run: |
           echo "job-name=${{ env.job-name }}" >> $GITHUB_ENV
-          echo "dir=./release/${{ env.job-name }}" >> $GITHUB_ENV
-          echo "path=./release/${{ env.job-name }}/${{ env.output-file-name}}" >> $GITHUB_ENV
-          mkdir -p ./release/${{ env.job-name }}
+          echo "path=./release/${{ env.job-name }}-build" >> $GITHUB_ENV
         env:
           job-name: ubuntu
           output-file-name: "${{ env.proj-name }}"
@@ -107,7 +111,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: "${{ env.job-name }}-build"
-          path: "${{ env.dir }}"
+          path: "./release"
       - name: Ls
         run: ls -R ./release
       - name: Deploy
@@ -122,9 +126,7 @@ jobs:
       - name: Start deploy ${{ env.job-name }}
         run: |
           echo "job-name=${{ env.job-name }}" >> $GITHUB_ENV
-          echo "dir=./release/${{ env.job-name }}" >> $GITHUB_ENV
-          echo "path=./release/${{ env.job-name }}/${{ env.output-file-name}}" >> $GITHUB_ENV
-          mkdir -p ./release/${{ env.job-name }}
+          echo "path=./release/${{ env.job-name }}-build" >> $GITHUB_ENV
         env:
           job-name: windows
           output-file-name: "${{ env.proj-name }}.exe"
@@ -132,7 +134,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: "${{ env.job-name }}-build"
-          path: ./release
+          path: "./release"
       - name: Ls
         run: ls -R ./release
       - name: Deploy
