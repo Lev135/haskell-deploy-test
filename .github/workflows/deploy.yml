@@ -43,12 +43,11 @@ jobs:
       - name: Build
         run: |
           cabal build ${{ env.proj-name }} # the next command doesn't work with -O2 unfortunately
-          echo "path=$(cabal list-bin ${{ env.proj-name }})" >> $GITHUB_ENV
 
       - name: Moving binary
         run: |
           mkdir -p ./release/${{ github.job }}
-          mv ${{ env.path }} "./release/${{ github.job }}/"
+          mv "$(cabal list-bin ${{ env.proj-name }})" "./release/${{ github.job }}/"
           ls -R ./release
 
       - name: Caching binary
@@ -85,12 +84,11 @@ jobs:
       - name: Build
         run: |
           cabal build ${{ env.proj-name }} # the next command doesn't work with -O2 unfortunately
-          echo "path=$(cabal list-bin ${{ env.proj-name }})" >> $GITHUB_ENV
 
       - name: Moving binary
         run: |
           mkdir ./release/${{ github.job }}
-          mv ${{ env.path }} "./release/${{ github.job }}/"
+          mv "$(cabal list-bin ${{ env.proj-name }})" "./release/${{ github.job }}/"
           ls -R ./release
 
       - name: Caching binary
