@@ -5,10 +5,10 @@ name: deploy
 
 # Controls when the workflow will run. Configure them for yourself
 on:
-  # push:
-  #   branches: [ master ]
-  # pull_request:
-  #   branches: [ master ]
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 #
 env:
@@ -44,52 +44,43 @@ jobs:
         run: |
           cabal build ${{ env.proj-name }} # the next command doesn't work with -O2 unfortunately
           echo "path=$(cabal list-bin ${{ env.proj-name }})" >> $GITHUB_ENV
-        
-      - name: Deploy
-        uses: adityak74/google-drive-upload-git-action@main
-        with:
-          credentials: ${{ secrets.credentials }}
-          filename: "${{ env.path }}"
-          name: "Release-on-${{ runner.os }}" 
-          folderId: ${{ secrets.folderId }} 
-          overwrite: "true"
-  # On windows
-  windows:
-    runs-on: windows-latest
 
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-haskell@v1
-        with:
-          ghc-version: '8.10.3'
-          cabal-version: '3.6.2.0'
-      - name: Cabal version
-        run: cabal --version
-      - name: Cache
+      - name: Moving binary
+        run: |
+          mkdir -p ./release/${{ github.job }}
+          mv ${{ env.path }} "./release/${{ github.job }}/"
+      
+      - name: Caching binary
         uses: actions/cache@v3
-        env:
-          cache-name: cache-cabal
         with:
-          path: ~/.cabal
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - name: Install dependencies
+          path: ${{ env.path }}
+          key: "${{ github.sha }}/${{ github.job }}"
+  
+  # Deploy cached binaries
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make release dir
         run: |
-          cabal update
-          cabal build --only-dependencies
-      - name: Build
-        run: |
-          cabal build ${{ env.proj-name }} # the next command doesn't work with -O2 unfortunately
-          echo "path=$(cabal list-bin ${{ env.proj-name }})" >> $GITHUB_ENV
-        
+          mkdir -p ./release
+      
+      - name: Start deploy ${{ env.job-name }}
+        runs: |
+          echo "job-name = ${{ env.job-name }}" >> $GITHUB_ENV
+          echo "path = ./release/${{ env.job-name }}" >> $GITHUB_ENV
+          mkdir -p ./release/${{ env.job-name }}
+        env:
+          job-name: ubuntu
+      - name: Restore cache ${{ env.job-name }}
+        uses: actions/cache@v3
+        with:
+          path: "${{ env.path }}" 
       - name: Deploy
         uses: adityak74/google-drive-upload-git-action@main
         with:
           credentials: ${{ secrets.credentials }}
           filename: "${{ env.path }}"
-          name: "Release-on-${{ runner.os }}" 
+          name: "Release-on-${{ env.job-name }}" 
           folderId: ${{ secrets.folderId }} 
           overwrite: "true"
+  

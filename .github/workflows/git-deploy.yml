@@ -12,9 +12,9 @@ env:
 
 
 on:
-  push:
-    # There should be only one branch here to work properly
-    branches: master
+  # push:
+  #   # There should be only one branch here to work properly
+  #   branches: master
 
 jobs:
            
