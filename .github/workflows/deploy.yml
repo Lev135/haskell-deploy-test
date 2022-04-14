@@ -58,6 +58,7 @@ jobs:
   
   # Deploy cached binaries
   deploy:
+    needs: [ ubuntu ]
     runs-on: ubuntu-latest
     steps:
       - name: Make release dir
