@@ -56,6 +56,47 @@ jobs:
           path: ${{ env.path }}
           key: "${{ github.sha }}/${{ github.job }}"
   
+  # On windows
+  windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-haskell@v1
+        with:
+          ghc-version: '8.10.3'
+          cabal-version: '3.2'
+      - name: Cache
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-cabal
+        with:
+          path: ~/.cabal
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Install dependencies
+        run: |
+          cabal update
+          cabal build --only-dependencies
+      - name: Build
+        run: |
+          cabal build ${{ env.proj-name }} # the next command doesn't work with -O2 unfortunately
+          echo "path=$(cabal list-bin ${{ env.proj-name }})" >> $GITHUB_ENV
+
+      - name: Moving binary
+        run: |
+          mkdir -p ./release/${{ github.job }}
+          mv ${{ env.path }} "./release/${{ github.job }}/"
+      
+      - name: Caching binary
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.path }}
+          key: "${{ github.sha }}/${{ github.job }}"
+  
   # Deploy cached binaries
   deploy:
     needs: [ ubuntu ]
@@ -74,6 +115,29 @@ jobs:
         env:
           job-name: ubuntu
           output-file-name: "${{ env.proj-name }}"
+      - name: Restore cache ${{ env.job-name }}
+        uses: actions/cache@v3
+        with:
+          path: "${{ env.dir }}" 
+          key: "${{ github.sha }}/${{ env.job-name}}"
+      - name: Deploy
+        uses: adityak74/google-drive-upload-git-action@main
+        with:
+          credentials: ${{ secrets.credentials }}
+          filename: "${{ env.path }}"
+          name: "Release-on-${{ env.job-name }}" 
+          folderId: ${{ secrets.folderId }} 
+          overwrite: "true"
+      
+      - name: Start deploy ${{ env.job-name }}
+        run: |
+          echo "job-name=${{ env.job-name }}" >> $GITHUB_ENV
+          echo "dir=./release/${{ env.job-name }}" >> $GITHUB_ENV
+          echo "path=./release/${{ env.job-name }}/${{ env.output-file-name}}" >> $GITHUB_ENV
+          mkdir -p ./release/${{ env.job-name }}
+        env:
+          job-name: windows
+          output-file-name: "${{ env.proj-name }}.exe"
       - name: Restore cache ${{ env.job-name }}
         uses: actions/cache@v3
         with:
