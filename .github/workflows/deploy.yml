@@ -50,11 +50,11 @@ jobs:
           mv "$(cabal list-bin ${{ env.proj-name }})" "./release/${{ github.job }}/"
           ls -R ./release
 
-      - name: Caching binary
-        uses: actions/cache@v3
+      - name: Artifact binary
+        uses: actions/upload-artifact@v2
         with:
           path: "./release/${{ github.job }}/*"
-          key: "${{ github.sha }}/${{ github.job }}"
+          name: "${{ github.job }}-build"
   
   # On windows
   windows:
@@ -91,11 +91,11 @@ jobs:
           mv "$(cabal list-bin ${{ env.proj-name }})" "./release/${{ github.job }}/"
           ls -R ./release
 
-      - name: Caching binary
-        uses: actions/cache@v3
+      - name: Artifact binary
+        uses: actions/upload-artifact@v2
         with:
           path: "./release/${{ github.job }}/*"
-          key: "${{ github.sha }}/${{ github.job }}"
+          name: "${{ github.job }}-build"
   
   # Deploy cached binaries
   deploy:
@@ -115,11 +115,10 @@ jobs:
         env:
           job-name: ubuntu
           output-file-name: "${{ env.proj-name }}"
-      - name: Restore cache ${{ env.job-name }}
-        uses: actions/cache@v3
+      - name: Use artifact ${{ env.job-name }}
+        uses: actions/download-artifact@v2
         with:
-          path: "${{ env.dir }}/*" 
-          key: "${{ github.sha }}/${{ env.job-name}}"
+          name: "${{ env.job-name }}-build"
       - name: Ls
         run: ls -R ./release
       - name: Deploy
@@ -140,11 +139,10 @@ jobs:
         env:
           job-name: windows
           output-file-name: "${{ env.proj-name }}.exe"
-      - name: Restore cache ${{ env.job-name }}
-        uses: actions/cache@v3
+      - name: Use artifact ${{ env.job-name }}
+        uses: actions/download-artifact@v2
         with:
-          path: "${{ env.dir }}/*" 
-          key: "${{ github.sha }}/${{ env.job-name}}"
+          name: "${{ env.job-name }}-build"
       - name: Ls
         run: ls -R ./release
       - name: Deploy
