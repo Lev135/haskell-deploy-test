@@ -93,7 +93,7 @@ jobs:
   
   # Deploy cached binaries
   deploy:
-    needs: [ ubuntu ]
+    needs: [ ubuntu, windows ]
     runs-on: ubuntu-latest
     steps:
       - name: Make release dir
