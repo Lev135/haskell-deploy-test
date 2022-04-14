@@ -1,5 +1,4 @@
 # This is a workflow for automatic deployment of Haskell application
-# unfortunately it doesn't work for windows
 
 name: deploy
 
@@ -10,7 +9,7 @@ on:
   pull_request:
     branches: [ master ]
 
-#
+# Set up this variable for yourselves
 env:
   proj-name: deploy-test
 
@@ -104,6 +103,7 @@ jobs:
         run: |
           echo "job-name=${{ env.job-name }}" >> $GITHUB_ENV
           echo "path=./release/${{ env.job-name }}-build" >> $GITHUB_ENV
+          echo "output-file-name=${{ env.output-file-name }}" >> $GITHUB_ENV
         env:
           job-name: ubuntu
           output-file-name: "${{ env.proj-name }}"
@@ -127,6 +127,7 @@ jobs:
         run: |
           echo "job-name=${{ env.job-name }}" >> $GITHUB_ENV
           echo "path=./release/${{ env.job-name }}-build" >> $GITHUB_ENV
+          echo "output-file-name=${{ env.output-file-name }}" >> $GITHUB_ENV
         env:
           job-name: windows
           output-file-name: "${{ env.proj-name }}.exe"
