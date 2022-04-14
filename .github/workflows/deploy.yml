@@ -49,7 +49,8 @@ jobs:
         run: |
           mkdir -p ./release/${{ github.job }}
           mv ${{ env.path }} "./release/${{ github.job }}/"
-      
+          ls -R ./release
+
       - name: Caching binary
         uses: actions/cache@v3
         with:
@@ -88,9 +89,10 @@ jobs:
 
       - name: Moving binary
         run: |
-          mkdir -p ./release/${{ github.job }}
+          mkdir ./release/${{ github.job }}
           mv ${{ env.path }} "./release/${{ github.job }}/"
-      
+          ls -R ./release
+
       - name: Caching binary
         uses: actions/cache@v3
         with:
@@ -145,6 +147,8 @@ jobs:
         with:
           path: "${{ env.dir }}/*" 
           key: "${{ github.sha }}/${{ env.job-name}}"
+      - name: Ls
+        run: ls -R ./release
       - name: Deploy
         uses: adityak74/google-drive-upload-git-action@main
         with:
