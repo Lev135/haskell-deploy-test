@@ -44,16 +44,10 @@ jobs:
         run: |
           cabal build ${{ env.proj-name }} # the next command doesn't work with -O2 unfortunately
 
-      - name: Moving binary
-        run: |
-          mkdir -p ./release/${{ github.job }}
-          mv "$(cabal list-bin ${{ env.proj-name }})" "./release/${{ github.job }}/"
-          ls -R ./release
-
       - name: Artifact binary
         uses: actions/upload-artifact@v2
         with:
-          path: "./release/${{ github.job }}/*"
+          path: "$(cabal list-bin ${{ env.proj-name }})/*"
           name: "${{ github.job }}-build"
   
   # On windows
@@ -85,16 +79,10 @@ jobs:
         run: |
           cabal build ${{ env.proj-name }} # the next command doesn't work with -O2 unfortunately
 
-      - name: Moving binary
-        run: |
-          mkdir ./release/${{ github.job }}
-          mv "$(cabal list-bin ${{ env.proj-name }})" "./release/${{ github.job }}/"
-          ls -R ./release
-
       - name: Artifact binary
         uses: actions/upload-artifact@v2
         with:
-          path: "./release/${{ github.job }}/*"
+          path: "$(cabal list-bin ${{ env.proj-name }})/*"
           name: "${{ github.job }}-build"
   
   # Deploy cached binaries
@@ -119,7 +107,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: "${{ env.job-name }}-build"
-          path: ./release
+          path: "${{ env.dir }}"
       - name: Ls
         run: ls -R ./release
       - name: Deploy
