@@ -68,14 +68,16 @@ jobs:
       - name: Start deploy ${{ env.job-name }}
         run: |
           echo "job-name=${{ env.job-name }}" >> $GITHUB_ENV
-          echo "path=./release/${{ env.job-name }}" >> $GITHUB_ENV
+          echo "dir=./release/${{ env.job-name }}" >> $GITHUB_ENV
+          echo "path=./release/${{ env.job-name }}/${{ env.output-file-name}}" >> $GITHUB_ENV
           mkdir -p ./release/${{ env.job-name }}
         env:
           job-name: ubuntu
+          output-file-name: "${{ env.proj-name }}"
       - name: Restore cache ${{ env.job-name }}
         uses: actions/cache@v3
         with:
-          path: "${{ env.path }}" 
+          path: "${{ env.dir }}" 
           key: "${{ github.sha }}/${{ env.job-name}}"
       - name: Deploy
         uses: adityak74/google-drive-upload-git-action@main
