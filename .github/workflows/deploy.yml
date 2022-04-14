@@ -65,7 +65,7 @@ jobs:
           mkdir -p ./release
       
       - name: Start deploy ${{ env.job-name }}
-        runs: |
+        run: |
           echo "job-name = ${{ env.job-name }}" >> $GITHUB_ENV
           echo "path = ./release/${{ env.job-name }}" >> $GITHUB_ENV
           mkdir -p ./release/${{ env.job-name }}
