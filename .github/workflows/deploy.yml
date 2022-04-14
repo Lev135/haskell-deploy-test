@@ -120,6 +120,8 @@ jobs:
         with:
           path: "${{ env.dir }}" 
           key: "${{ github.sha }}/${{ env.job-name}}"
+      - name: Ls
+        run: ls -R ./release
       - name: Deploy
         uses: adityak74/google-drive-upload-git-action@main
         with:
