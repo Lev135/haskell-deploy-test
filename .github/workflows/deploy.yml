@@ -99,7 +99,7 @@ jobs:
   
   # Deploy cached binaries
   deploy:
-    needs: [ ubuntu, windows ]
+    needs: [ ubuntu ]
     runs-on: ubuntu-latest
     steps:
       - name: Make release dir
@@ -119,6 +119,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: "${{ env.job-name }}-build"
+          path: ./release
       - name: Ls
         run: ls -R ./release
       - name: Deploy
@@ -143,6 +144,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: "${{ env.job-name }}-build"
+          path: ./release
       - name: Ls
         run: ls -R ./release
       - name: Deploy
